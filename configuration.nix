@@ -68,14 +68,14 @@ let
 
   rosPy = pkgs.rosPackages.humble.python3;
   pythonPath = lib.concatStringsSep ":" (lib.filter (p: p != "") [
-    (lib.makeSearchPath "lib/python${rosPy.pythonVersion}/site-packages" (rosRuntimePackages ++ [ rosWorkspaceEnv rosWorkspace ]))
+     (lib.makeSearchPath "lib/python${rosPy.pythonVersion}/site-packages" rosRuntimePackages)
     (lib.makeSearchPath "lib/python${py.pythonVersion}/site-packages" [ pyEnv webrtcEnv webrtcPkg ])
   ]);
 
-  amentRoots = rosRuntimePackages ++ [ rosWorkspaceEnv rosWorkspace webrtcPkg ];
+  amentRoots = rosRuntimePackages ++ [ webrtcPkg ];
   amentPrefixPath = lib.concatStringsSep ":" (map (pkg: "${pkg}") amentRoots);
 
-  webrtcRuntimeInputs = rosRuntimePackages ++ [ rosWorkspaceEnv rosWorkspace pyEnv webrtcEnv webrtcPkg ];
+  webrtcRuntimeInputs = rosRuntimePackages ++ [ pyEnv webrtcEnv webrtcPkg ];
   runtimePrefixes = lib.concatStringsSep " " (map (pkg: "${pkg}") webrtcRuntimeInputs);
   libraryPath = lib.makeLibraryPath webrtcRuntimeInputs;
 
@@ -97,6 +97,17 @@ let
       PYTHONPATH="''${PYTHONPATH-}"
       AMENT_PREFIX_PATH="''${AMENT_PREFIX_PATH-}"
       LD_LIBRARY_PATH="''${LD_LIBRARY_PATH-}"
+
+      # Seed env with known prefixes even if setup scripts are missing
+      if [ -n "${pythonPath}" ]; then
+        PYTHONPATH="${pythonPath}''${PYTHONPATH:+:}''${PYTHONPATH}"
+      fi
+      if [ -n "${amentPrefixPath}" ]; then
+        AMENT_PREFIX_PATH="${amentPrefixPath}''${AMENT_PREFIX_PATH:+:}''${AMENT_PREFIX_PATH}"
+      fi
+      if [ -n "${libraryPath}" ]; then
+        LD_LIBRARY_PATH="${libraryPath}''${LD_LIBRARY_PATH:+:}''${LD_LIBRARY_PATH}"
+      fi
 
       setup_scripts=(
         # High-level env from rosWorkspaceEnv
