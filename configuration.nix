@@ -68,14 +68,14 @@ let
 
   rosPy = pkgs.rosPackages.humble.python3;
  pythonPath = lib.concatStringsSep ":" (lib.filter (p: p != "") [
-    (lib.makeSearchPath "lib/python${rosPy.pythonVersion}/site-packages" (rosRuntimePackages ++ [ rosWorkspaceEnv rosWorkspace ]))
+    (lib.makeSearchPath "lib/python${rosPy.pythonVersion}/site-packages" [ rosWorkspaceEnv rosWorkspace ])
     (lib.makeSearchPath "lib/python${py.pythonVersion}/site-packages" [ pyEnv webrtcEnv webrtcPkg ])
   ]);
 
   amentRoots = rosRuntimePackages ++ [ rosWorkspaceEnv rosWorkspace webrtcPkg ];
   amentPrefixPath = lib.concatStringsSep ":" (map (pkg: "${pkg}") amentRoots);
 
-  webrtcRuntimeInputs = rosRuntimePackages ++ [ rosWorkspaceEnv rosWorkspace pyEnv webrtcEnv webrtcPkg ];
+  webrtcRuntimeInputs = [ rosWorkspaceEnv rosWorkspace pyEnv webrtcEnv webrtcPkg ] ++ rosRuntimePackages;
   runtimePrefixes = lib.concatStringsSep " " (map (pkg: "${pkg}") webrtcRuntimeInputs);
   libraryPath = lib.makeLibraryPath webrtcRuntimeInputs;
 
