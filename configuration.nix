@@ -97,11 +97,32 @@ let
       PYTHONPATH="''${PYTHONPATH-}"
       AMENT_PREFIX_PATH="''${AMENT_PREFIX_PATH-}"
       LD_LIBRARY_PATH="''${LD_LIBRARY_PATH-}"
+      if [ -z "''${RMW_IMPLEMENTATION-}" ]; then
+        RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
+      fi
+      export RMW_IMPLEMENTATION
 
-      # Seed env with known prefixes even if setup scripts are missing
-      PYTHONPATH="${pythonPath}''${PYTHONPATH:+:}''${PYTHONPATH}"
-      AMENT_PREFIX_PATH="${amentPrefixPath}''${AMENT_PREFIX_PATH:+:}''${AMENT_PREFIX_PATH}"
-      LD_LIBRARY_PATH="${libraryPath}''${LD_LIBRARY_PATH:+:}''${LD_LIBRARY_PATH}"
+      set -u
+      shopt -s nullglob
+
+      PYTHONPATH_BASE="${pythonPath}"
+      if [ -n "$PYTHONPATH_BASE" ]; then
+        PYTHONPATH="$PYTHONPATH_BASE''${PYTHONPATH:+:}''${PYTHONPATH}"
+      fi
+
+      AMENT_PREFIX_BASE="${amentPrefixPath}"
+      if [ -n "$AMENT_PREFIX_BASE" ]; then
+        AMENT_PREFIX_PATH="$AMENT_PREFIX_BASE''${AMENT_PREFIX_PATH:+:}''${AMENT_PREFIX_PATH}"
+      fi
+
+      LIBRARY_PATH_BASE="${libraryPath}"
+      if [ -n "$LIBRARY_PATH_BASE" ]; then
+        LD_LIBRARY_PATH="$LIBRARY_PATH_BASE''${LD_LIBRARY_PATH:+:}''${LD_LIBRARY_PATH}"
+      fi
+
+      export PYTHONPATH
+      export AMENT_PREFIX_PATH
+      export LD_LIBRARY_PATH
 
       setup_scripts=(
         # High-level env from rosWorkspaceEnv
