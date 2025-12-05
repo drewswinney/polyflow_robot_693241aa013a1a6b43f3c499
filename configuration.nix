@@ -99,15 +99,9 @@ let
       LD_LIBRARY_PATH="''${LD_LIBRARY_PATH-}"
 
       # Seed env with known prefixes even if setup scripts are missing
-      if [ -n "${pythonPath}" ]; then
-        PYTHONPATH="${pythonPath}''${PYTHONPATH:+:}''${PYTHONPATH}"
-      fi
-      if [ -n "${amentPrefixPath}" ]; then
-        AMENT_PREFIX_PATH="${amentPrefixPath}''${AMENT_PREFIX_PATH:+:}''${AMENT_PREFIX_PATH}"
-      fi
-      if [ -n "${libraryPath}" ]; then
-        LD_LIBRARY_PATH="${libraryPath}''${LD_LIBRARY_PATH:+:}''${LD_LIBRARY_PATH}"
-      fi
+      PYTHONPATH="${pythonPath}''${PYTHONPATH:+:}''${PYTHONPATH}"
+      AMENT_PREFIX_PATH="${amentPrefixPath}''${AMENT_PREFIX_PATH:+:}''${AMENT_PREFIX_PATH}"
+      LD_LIBRARY_PATH="${libraryPath}''${LD_LIBRARY_PATH:+:}''${LD_LIBRARY_PATH}"
 
       setup_scripts=(
         # High-level env from rosWorkspaceEnv
