@@ -75,7 +75,16 @@ let
   amentRoots = [ rosPkgs.ros-base rosWorkspaceEnv rosWorkspace webrtcPkg ];
   amentPrefixPath = lib.concatStringsSep ":" (map (pkg: "${pkg}") amentRoots);
 
-  webrtcRuntimeInputs = [ rosPkgs.ros-base rosWorkspaceEnv rosWorkspace pyEnv webrtcEnv webrtcPkg ];
+ webrtcRuntimeInputs = [
+    rosPkgs.ros-base
+    rosPkgs."rmw-cyclonedds-cpp"
+    rosPkgs."rmw-implementation"
+    rosWorkspaceEnv
+    rosWorkspace
+    pyEnv
+    webrtcEnv
+    webrtcPkg
+  ];
   runtimePrefixes = lib.concatStringsSep " " (map (pkg: "${pkg}") webrtcRuntimeInputs);
   libraryPath = lib.makeLibraryPath webrtcRuntimeInputs;
 
