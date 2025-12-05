@@ -839,6 +839,9 @@ in
       ROS_DOMAIN_ID = "0";
       LANG = "en_US.UTF-8";
       LC_ALL = "en_US.UTF-8";
+      PYTHONPATH = pythonPath;
+      AMENT_PREFIX_PATH = amentPrefixPath;
+      LD_LIBRARY_PATH = libraryPath;
     };
 
     restartIfChanged = true;
@@ -867,6 +870,9 @@ in
       ROS_DOMAIN_ID = "0";
       LANG = "en_US.UTF-8";
       LC_ALL = "en_US.UTF-8";
+      PYTHONPATH = pythonPath;
+      AMENT_PREFIX_PATH = amentPrefixPath;
+      LD_LIBRARY_PATH = libraryPath;
     };
 
     serviceConfig = {
