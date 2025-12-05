@@ -188,7 +188,7 @@
           ament-index-python
           composition-interfaces
         ] ++ [
-          rosPyPkgs.pyyaml or pkgs.python3Packages.pyyaml
+          pkgs.python3Packages.pyyaml
         ];
       in {
         pname = name;
@@ -206,7 +206,6 @@
       // lib.optionalAttrs (isAmentPythonPkg name) {
         # Force Python packages down the ament_python path so setup.py runs, and keep them on the ROS Python toolchain.
         buildType = "ament_python";
-        python3Packages = rosPyPkgs;
       }
       // lib.optionalAttrs (isAmentPythonPkg name) {
         # Provide the libexec shim ROS expects for ament_python packages.
@@ -235,9 +234,6 @@
     };
 
     # Python (ROS toolchain) + helpers
-    rosPy = rosPkgs.python3;
-    # Keep ament_python builds on the ROS Python set; do not fall back to the repo-pinned 3.12 toolchain.
-    rosPyPkgs = rosPkgs.python3Packages or (rosPy.pkgs or (throw "rosPkgs.python3Packages unavailable"));
     py = pkgs.python3;
     pyPkgs = py.pkgs or pkgs.python3Packages;
     sp = py.sitePackages;
