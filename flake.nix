@@ -179,14 +179,21 @@
       in builtins.pathExists "${base}/setup.py"
          || builtins.pathExists "${base}/pyproject.toml";
 
-    rosWorkspacePackages = lib.mapAttrs (name: _: rosPkgs.buildRosPackage (
+     rosWorkspacePackages = lib.mapAttrs (name: _: rosPkgs.buildRosPackage (
       let
-        amentPythonRuntime = with rosPkgs; [
+        # Broad ROS runtime so user packages have common messages/tools without per-package mapping.
+        defaultRosRuntime = with rosPkgs; [
+          ros-base
           rclpy
           launch
           launch-ros
           ament-index-python
           composition-interfaces
+          std-msgs
+          sensor-msgs
+          trajectory-msgs
+          geometry-msgs
+          nav-msgs
         ] ++ [
           pkgs.python3Packages.pyyaml
         ];
@@ -200,11 +207,11 @@
         # Avoid auto-adding a "debug" output (not emitted by most ROS packages here).
         separateDebugInfo = false;
         propagatedBuildInputs =
-          (lib.optionals (isAmentPythonPkg name) amentPythonRuntime)
+          (lib.optionals (isAmentPythonPkg name) defaultRosRuntime)
           ++ lib.optionals (rosPoetryDeps ? name) [ rosPoetryDeps.${name} ];
       }
       // lib.optionalAttrs (isAmentPythonPkg name) {
-        # Force Python packages down the ament_python path so setup.py runs, and keep them on the ROS Python toolchain.
+        # Force Python packages down the ament_python path so setup.py runs.
         buildType = "ament_python";
       }
       // lib.optionalAttrs (isAmentPythonPkg name) {
