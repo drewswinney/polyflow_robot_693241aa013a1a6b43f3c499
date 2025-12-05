@@ -236,7 +236,8 @@
 
     # Python (ROS toolchain) + helpers
     rosPy = rosPkgs.python3;
-    rosPyPkgs = rosPy.pkgs or rosPkgs.python3Packages or pkgs.python3Packages;
+    # Keep ament_python builds on the ROS Python set; do not fall back to the repo-pinned 3.12 toolchain.
+    rosPyPkgs = rosPkgs.python3Packages or (rosPy.pkgs or (throw "rosPkgs.python3Packages unavailable"));
     py = pkgs.python3;
     pyPkgs = py.pkgs or pkgs.python3Packages;
     sp = py.sitePackages;
